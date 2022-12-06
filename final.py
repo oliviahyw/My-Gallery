@@ -130,13 +130,13 @@ params_century = {
     "apikey": HAMAPI_KEY
 }
 
-# params_century.update({"q": "BCE"})
+params_century.update({"q": "BCE"})
 
-# results_century = make_request_with_cache(base_url_century, params_century, CACHE_DICT_CENTURY, CACHE_FILENAME_CENTURY)
-# centuries = results_century['records']
-# for century in centuries:
-#     print(century['name'])
-#     print(century['id'])
+results_century = make_request_with_cache(base_url_century, params_century, CACHE_DICT_CENTURY, CACHE_FILENAME_CENTURY)
+centuries = results_century['records']
+for century in centuries:
+    print(century['name'])
+    print(century['id'])
 
 
 CACHE_DICT_COLOR = open_cache(CACHE_FILENAME_COLOR)
@@ -146,14 +146,14 @@ params_color = {
     "apikey": HAMAPI_KEY
 }
 
-# params_color.update({"q": "red"})
+params_color.update({"q": "red"})
 
-# results_color = make_request_with_cache(base_url_color, params_color, CACHE_DICT_COLOR, CACHE_FILENAME_COLOR)
-# colors = results_color['records']
-# for color in colors:
-#     print(color['name'])
-#     print(color['id'])
-#     print(color['hex'])
+results_color = make_request_with_cache(base_url_color, params_color, CACHE_DICT_COLOR, CACHE_FILENAME_COLOR)
+colors = results_color['records']
+for color in colors:
+    print(color['name'])
+    print(color['id'])
+    print(color['hex'])
 
 CACHE_DICT_PLACE = open_cache(CACHE_FILENAME_PLACE)
 
@@ -162,13 +162,13 @@ params_place = {
     "apikey": HAMAPI_KEY
 }
 
-# params_place.update({"q": "asia"})
+params_place.update({"q": "asia"})
 
-# results_place = make_request_with_cache(base_url_place, params_place, CACHE_DICT_PLACE, CACHE_FILENAME_PLACE)
-# places = results_place['records']
-# for place in places:
-#     print(place['name'])
-#     print(place['id'])
+results_place = make_request_with_cache(base_url_place, params_place, CACHE_DICT_PLACE, CACHE_FILENAME_PLACE)
+places = results_place['records']
+for place in places:
+    print(place['name'])
+    print(place['id'])
 
 
 CACHE_DICT_CLASS = open_cache(CACHE_FILENAME_CLASS)
