@@ -3,17 +3,12 @@ import json
 
 HAMAPI_KEY = '97eb9bff-851e-4bd6-8987-03e58d8154e6'
 
-CACHE_FILENAME_CENTURY = 'cache_century.json'
-CACHE_DICT_CENTURY = {}
-
-CACHE_FILENAME_COLOR = 'cache_color.json'
-CACHE_DICT_COLOR = {}
-
-CACHE_FILENAME_PLACE = 'cache_place.json'
-CACHE_DICT_PLACE = {}
 
 CACHE_FILENAME_CLASS = 'cache_class.json'
 CACHE_DICT_CLASS = {}
+
+CACHE_FILENAME_OBJECT = 'cache_object.json'
+CACHE_DICT_OBJECT = {}
 
 def open_cache(CACHE_FILENAME):
     '''opens the cache file if it exists and loads the JSON into
@@ -123,52 +118,7 @@ def make_request_with_cache(baseurl, params, CACHE_DICT, CACHE_FILENAME):
         save_cache(CACHE_DICT, CACHE_FILENAME)
         return CACHE_DICT[request_key]
 
-CACHE_DICT_CENTURY = open_cache(CACHE_FILENAME_CENTURY)
 
-base_url_century = 'https://api.harvardartmuseums.org/century'
-params_century = {
-    "apikey": HAMAPI_KEY
-}
-
-params_century.update({"q": "BCE"})
-
-results_century = make_request_with_cache(base_url_century, params_century, CACHE_DICT_CENTURY, CACHE_FILENAME_CENTURY)
-centuries = results_century['records']
-for century in centuries:
-    print(century['name'])
-    print(century['id'])
-
-
-CACHE_DICT_COLOR = open_cache(CACHE_FILENAME_COLOR)
-
-base_url_color = 'https://api.harvardartmuseums.org/color'
-params_color = {
-    "apikey": HAMAPI_KEY
-}
-
-params_color.update({"q": "red"})
-
-results_color = make_request_with_cache(base_url_color, params_color, CACHE_DICT_COLOR, CACHE_FILENAME_COLOR)
-colors = results_color['records']
-for color in colors:
-    print(color['name'])
-    print(color['id'])
-    print(color['hex'])
-
-CACHE_DICT_PLACE = open_cache(CACHE_FILENAME_PLACE)
-
-base_url_place = 'https://api.harvardartmuseums.org/place'
-params_place = {
-    "apikey": HAMAPI_KEY
-}
-
-params_place.update({"q": "asia"})
-
-results_place = make_request_with_cache(base_url_place, params_place, CACHE_DICT_PLACE, CACHE_FILENAME_PLACE)
-places = results_place['records']
-for place in places:
-    print(place['name'])
-    print(place['id'])
 
 
 CACHE_DICT_CLASS = open_cache(CACHE_FILENAME_CLASS)
@@ -178,12 +128,32 @@ params_class = {
     "apikey": HAMAPI_KEY
 }
 
-params_class.update({"q": "plaques"})
+params_class.update({"q": "drawings"})
 
 results_class = make_request_with_cache(base_url_class, params_class, CACHE_DICT_CLASS, CACHE_FILENAME_CLASS)
 classes = results_class['records']
-for c in classes:
-    print(c['name'])
-    print(c['id'])
+# for c in classes:
+#     print(c['name'])
+#     print(c['id'])
+classId = classes[0]['id']
+print(classId)
 
+
+CACHE_DICT_OBJECT = open_cache(CACHE_FILENAME_OBJECT)
+
+base_url = 'https://api.harvardartmuseums.org/object'
+params = {
+    "apikey": HAMAPI_KEY
+}
+
+params['region'] = 'europe'
+params['yearmade'] = 1800
+params['classification'] = classId
+
+results = make_request_with_cache(base_url, params, CACHE_DICT_OBJECT, CACHE_FILENAME_OBJECT)
+objects = results['records']
+for object in objects:
+    print(object['title'])
+    print(object['url'])
+    print(object['people'][0]['name'])
 
