@@ -2,6 +2,9 @@ import requests
 import os
 import json
 import webbrowser
+import re
+import string
+from collections import Counter
 from finalcache import *
 
 
@@ -90,6 +93,7 @@ def main():
 
     # artists = []
     objectsId = []
+    objectsTitle = []
     for page in pages:
         params = {
             "apikey": HAMAPI_KEY, "region": "europe", "yearmade": '1800', "classification": classId, "page": page
@@ -99,6 +103,7 @@ def main():
         objects = results['records']
         for object in objects:
             objectsId.append(object['id'])
+            objectsTitle.append(object['title'])
             # print(object['title'])
             # print(object['url'])
             # webbrowser.get('chrome').open(object['url'])
@@ -107,8 +112,28 @@ def main():
             #     artists.append(object['people'][0]['name'])
             # except:
             #     pass
-        print(page,objectsId)
+        print(page,objectsId, objectsTitle)
+        get_the_10_most_common_words(objectsTitle)
 
+def get_the_10_most_common_words(list):
+    words_10_Most_Common = []
+    words_list = []
+    for title in list:
+        title_list = title.split()
+        words_list.extend(title_list)
+    new_list = []
+    for word in words_list:
+        word = re.sub(r'[^\w\s]','',word)
+        new_list.append(word)
+    new_list = [word.lower() for word in new_list]    
+    common_words = ['a', 'of', 'in', 'the', 'for', 'with', 'and', 'on']
+    new_list = [word.lower() for word in new_list if word not in common_words] 
+    words_counter = Counter(new_list)
+    words_most_common = words_counter.most_common(10)
+    for item in words_most_common:
+        words_10_Most_Common.append(item[0])
+    print(words_most_common)
+    print("words_10_Most_Common: ", words_10_Most_Common)
     
 
 if __name__ == "__main__":
