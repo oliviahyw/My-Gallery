@@ -1,5 +1,11 @@
 import requests
+import os
 import json
+import webbrowser
+import wikipedia
+from bs4 import BeautifulSoup
+import re
+import MyTwitterSecrets
 
 HAMAPI_KEY = '97eb9bff-851e-4bd6-8987-03e58d8154e6'
 
@@ -152,8 +158,14 @@ params['classification'] = classId
 
 results = make_request_with_cache(base_url, params, CACHE_DICT_OBJECT, CACHE_FILENAME_OBJECT)
 objects = results['records']
+artists = []
 for object in objects:
     print(object['title'])
     print(object['url'])
+    # webbrowser.get('chrome').open(object['url'])
     print(object['people'][0]['name'])
+    artists.append(object['people'][0]['name'])
+
+print(artists)
+
 
