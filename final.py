@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 import re
 import MyTwitterSecrets
 
+
+# Data Source 1: HAM API
+
 HAMAPI_KEY = '97eb9bff-851e-4bd6-8987-03e58d8154e6'
 
 
@@ -168,4 +171,14 @@ for object in objects:
 
 print(artists)
 
+artist = artists[0]
 
+# Data Source 2: Twitter API
+
+bearer_token = MyTwitterSecrets.Bearer_Token
+
+search_url = "https://api.twitter.com/2/tweets/search/recent"
+
+# Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
+# expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
+query_params = {'query': '#MarchMadness'}
