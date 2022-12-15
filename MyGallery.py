@@ -162,7 +162,7 @@ def get_HAM_params():
 @app.route('/generate_media', methods=['POST'])
 def generate_media():
     '''Generate a media gallery based on the keyword that user chose.'''
-    
+
     keyword = request.form['word_options']
 
     CACHE_FILENAME_ITUNES = 'cache_itunes.json'
