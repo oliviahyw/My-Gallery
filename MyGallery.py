@@ -1,3 +1,6 @@
+import re
+from collections import Counter
+
 from finalcache import *
 from HAM_data import *
 from itunes_data import *
@@ -6,6 +9,7 @@ from tree import *
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
+
 
 
 HAMAPI_KEY = '97eb9bff-851e-4bd6-8987-03e58d8154e6'
@@ -21,6 +25,19 @@ tree_file = 'treeFile.json'
 
 
 def get_class_id(class_name):
+    '''Get the id of a classification API of HAM.
+    Parameters
+    ----------
+    class_name: string
+        The name of the classification
+    
+    Returns
+    -------
+    string
+        The id of the classification
+        Or 'any' if the class_name is 'any'
+    '''
+
     if class_name == 'any':
         return 'any'
     CACHE_DICT_CLASS = open_cache(CACHE_FILENAME_CLASS)
@@ -39,18 +56,69 @@ def get_class_id(class_name):
     return class_id
 
 
-class object:
-    def __init__(self, title, url):
-        self.title = title
-        self.url = url
+
+
+
+def get_the_10_most_common_words(list):
+    '''Find the 10 most frequent words in a titile list.
+    Parameters
+    ----------
+    list: list
+        A list of title strings
+    
+    Returns
+    -------
+    list
+        The list of the 10 most frequent words in the list of titles
+    '''
+
+    words_10_Most_Common = []
+    words_list = []
+
+    for title in list:
+        title_list = title.split()
+        words_list.extend(title_list)
+
+    new_list = []
+
+    for word in words_list:
+        word = re.sub(r'[^\w\s]','',word)
+        new_list.append(word)
+
+    new_list = [word.lower() for word in new_list]
+    new_list = [word for word in new_list if not word.isdigit()]    
+
+    common_words = ['a', 'an', 'from', 'to', 'by', 'of', 'in', 'the', 'for', 'with', 'and', 'on']
+    new_list = [word for word in new_list if word not in common_words] 
+
+    words_counter = Counter(new_list)
+    words_most_common = words_counter.most_common(10)
+
+    for item in words_most_common:
+        words_10_Most_Common.append(item[0])
+    
+    return words_10_Most_Common
+
 
 
 @app.route('/')
 def index():
+    '''The index page of My Gallery.'''
+
     return render_template('index.html') 
 
-@app.route('/handle_form', methods=['POST'])
+
+@app.route('/handle_form', methods=['POST', 'GET'])
 def get_HAM_params():
+    '''Get the value of three parameters (from user input), render the first 10 results (art obejcts).
+    Every result visualizes the title of that art object.
+    Every result links to the detail information page of that art object.
+    If there is no result found, it will visualize an empty page, and let the user to start over.
+
+    Visualizes the 10 most frequent words appeared in the 100 records of artworks' titles.
+    Let the user to choose a word to generate a media gallery.
+    '''
+
     culture = request.form['cultures']
     yearmade = request.form['yearmade']
     classification = request.form['classes']
@@ -78,7 +146,6 @@ def get_HAM_params():
             objects.append(object(objects_list[i]['title'], objects_list[i]['url']))
             objects_titles.append(objects_list[i]['title'])
             
-
     saveTree(tree, tree_file)
 
     ten_words = get_the_10_most_common_words(objects_titles)
@@ -94,6 +161,8 @@ def get_HAM_params():
 
 @app.route('/generate_media', methods=['POST'])
 def generate_media():
+    '''Generate a media gallery based on the keyword that user chose.'''
+    
     keyword = request.form['word_options']
 
     CACHE_FILENAME_ITUNES = 'cache_itunes.json'
@@ -142,7 +211,7 @@ def generate_media():
     whole_list = song_list+movie_list+media_list
 
     if len(whole_list) == 0:
-        return render_template('no_media_result.html')
+        return render_template('no_result.html')
 
     return render_template('media_gallery.html',
         term = keyword,

@@ -3,11 +3,9 @@ from finalcache import *
 
 HAMAPI_KEY = '97eb9bff-851e-4bd6-8987-03e58d8154e6'
 
-CACHE_FILENAME_CLASS = 'cache_class.json'
-CACHE_DICT_CLASS = {}
-
 CACHE_FILENAME_OBJECT = 'cache_object.json'
 CACHE_DICT_OBJECT = {}
+
 
 
 class TreeNode:
@@ -37,6 +35,7 @@ class TreeNode:
         self.children.append(child)
 
 
+
 class LeafNode(TreeNode):
     def __init__(self, data):
         self.data = data
@@ -44,7 +43,21 @@ class LeafNode(TreeNode):
         self.parent = None
 
 
+
 def saveTree(tree, treeFile):
+    '''Save tree class object into a JSON file.
+    Parameters
+    ----------
+    tree: TreeNode instance
+        An instance of the TreeNode class
+    treeFile: JSON file
+        A JSON file that stores the tree cache
+
+    Returns
+    -------
+    None
+    '''
+
     root = tree.data
     tree_dict = {}
     tree_dict[root] = {}
@@ -60,7 +73,19 @@ def saveTree(tree, treeFile):
     save_cache(tree_dict, treeFile)
 
 
+
 def loadTree(treeFile): 
+    '''Load the tree from cache file.
+    Parameters
+    ----------
+    treeFile: JSON file
+        A JSON file that stores the tree cache
+
+    Returns
+    -------
+    A TreeNode instance
+    '''
+
     tree_dict = open_cache(treeFile)
     root_data = list(tree_dict.keys())[0]
     root_node = TreeNode(root_data)
@@ -78,26 +103,24 @@ def loadTree(treeFile):
                 class_node.add_child(objects_node)
     return root_node
 
-    
-def get_class_id(class_name):
-    CACHE_DICT_CLASS = open_cache(CACHE_FILENAME_CLASS)
 
-    base_url_class = 'https://api.harvardartmuseums.org/classification'
-    params_class = {
-        "apikey": HAMAPI_KEY, "q": class_name
-    }
-
-    results_class = make_request_with_cache(base_url_class, params_class, CACHE_DICT_CLASS, CACHE_FILENAME_CLASS)
-
-    classes = results_class['records']
-    # for c in classes:
-    #     print(c['name'])
-    #     print(c['id'])
-    class_id = classes[0]['id']
-    # print(classId)
-    return class_id
 
 def get_objects(culture, yearmade, class_id):
+    '''Get art objects with three parameters, using HAM API.
+    Parameters
+    ----------
+    culture: string
+        The value for the culture parameter
+    yearmade: string
+        The value for the yearmade parameter
+    class_id: string
+        The value for the classification parameter
+
+    Returns
+    -------
+    A list of dictionaries, every dictionary is an art object, every dictionary includes three key-value pairs: object id, object title, object url.
+    '''
+
     CACHE_DICT_OBJECT = open_cache(CACHE_FILENAME_OBJECT)
 
     pages = []
@@ -125,7 +148,32 @@ def get_objects(culture, yearmade, class_id):
     return objects_list
 
 
+
 def search_or_add(tree, culture, yearmade, class_id):
+    '''Search in a TreeNode instance, if the same LeafNode is already there, return the same tree and the data of the LeafNode.
+    If we cannot find the LeafNode, then add it to the tree, return the new tree and the data of the LeafNode.
+
+    Parameters
+    ----------
+    tree: TreeNode instance
+        An instance of the TreeNode class
+    culture: string
+        The value for the culture parameter
+    yearmade: string
+        The value for the yearmade parameter
+    class_id: string
+        The value for the classification parameter
+
+    Returns
+    -------
+    TreeNode
+        A new tree if LeafNode added
+        The original tree if LeafNode found
+
+    A list of artwork objects' dictionaries
+        Every dictionary is an art object, every dictionary includes three key-value pairs: object id, object title, object url.
+    '''
+
     if tree.children == []:
         cu = TreeNode(culture)
         tree.add_child(cu)

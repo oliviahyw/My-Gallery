@@ -12,7 +12,7 @@ def open_cache(CACHE_FILENAME):
 
     Returns
     -------
-    The opened cache
+    The opened cache dictionary
     '''
     try:
         cache_file = open(CACHE_FILENAME, 'r')
@@ -23,6 +23,7 @@ def open_cache(CACHE_FILENAME):
         cache_dict = {}
     return cache_dict
     
+
 
 def save_cache(cache_dict, CACHE_FILENAME):
     '''saves the current state of the cache to disk
@@ -43,6 +44,8 @@ def save_cache(cache_dict, CACHE_FILENAME):
     fw.write(dumped_json_cache)
     fw.close()
 
+
+
 def construct_unique_key(baseurl, params):
     ''' constructs a key that is guaranteed to uniquely and 
     repeatably identify an API request by its baseurl and params
@@ -52,6 +55,7 @@ def construct_unique_key(baseurl, params):
         The URL for the API endpoint
     params: dictionary
         A dictionary of param: param_value pairs
+        
     Returns
     -------
     string
