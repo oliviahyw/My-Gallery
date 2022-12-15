@@ -38,6 +38,11 @@ def get_class_id(class_name):
     return class_id
 
 
+class object:
+    def __init__(self, title, url):
+        self.title = title
+        self.url = url
+
 
 @app.route('/')
 def index():
@@ -54,10 +59,14 @@ def get_HAM_params():
 
     tree, objects_list = search_or_add(tree, culture, yearmade, class_id)
 
+    objects = []
     objects_titles = []
+
     n = len(objects_list)
+
     if n >= 10:
         for i in range(10):
+            objects.append(object(objects_list[i]['title'], objects_list[i]['url']))
             objects_titles.append(objects_list[i]['title'])
 
     elif n == 0:
@@ -65,7 +74,9 @@ def get_HAM_params():
 
     else:
         for i in range(n):
+            objects.append(object(objects_list[i]['title'], objects_list[i]['url']))
             objects_titles.append(objects_list[i]['title'])
+            
 
     saveTree(tree, tree_file)
 
@@ -76,6 +87,7 @@ def get_HAM_params():
         yearmade_p = yearmade,
         class_p = classification,
         titles = objects_titles,
+        objects_p = objects,
         words = ten_words)
 
 
