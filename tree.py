@@ -44,80 +44,39 @@ class LeafNode(TreeNode):
         self.parent = None
 
 def saveTree(tree, treeFile):
-    print("Root", file = treeFile)
-    print(tree.data, file = treeFile)
-    if tree.children == []:
-        pass
-    else:
-        for region_node in tree.children:
-            print("Region", file = treeFile)
-            print(region_node.data, file = treeFile)
-            for year_node in region_node.children:
-                print("Yearmade", file = treeFile)
-                print(year_node.data, file = treeFile)
-                for class_node in year_node.children:
-                    print("Class_id", file = treeFile)
-                    print(class_node.data, file = treeFile)
-                    objects_list = class_node.children[0]
-                    print("Objects", file = treeFile)
-                    print(objects_list.data, file = treeFile)
+    root = tree.data
+    tree_dict = {}
+    tree_dict[root] = {}
+    
+    for region_node in tree.children:
+        tree_dict[root][region_node.data] = {}
+        for year_node in region_node.children:
+            tree_dict[root][region_node.data][year_node.data] = {}
+            for class_node in year_node.children:
+                class_id = class_node.data
+                objects_list = class_node.children[0]
+                tree_dict[root][region_node.data][year_node.data][class_id] = objects_list.data
+    save_cache(tree_dict, treeFile)
 
 
 def loadTree(treeFile): 
-    line = treeFile.readline().strip("\n")
-    if line == "":
-        return None
-    else:
-        if line == "Root":
-                root_node = TreeNode(treeFile.readline().strip("\n"))
-                line = treeFile.readline().strip("\n")
-                if line == "":
-                    return root_node
-                else:
-                    while True:
-                        if line == "Region":       
-                            region_node = TreeNode(treeFile.readline().strip("\n"))
-                            root_node.add_child(region_node)
-                            line = treeFile.readline().strip("\n")
-                            year_node = TreeNode(treeFile.readline().strip("\n"))
-                            region_node.add_child(year_node)
-                            line = treeFile.readline().strip("\n")
-                            class_node = TreeNode(treeFile.readline().strip("\n"))
-                            year_node.add_child(class_node)
-                            line = treeFile.readline().strip("\n")
-                            objects_id = LeafNode(treeFile.readline().strip("\n"))
-                            class_node.add_child(objects_id)
-                            line = treeFile.readline().strip("\n")
-                            if line == "":
-                                break
-                            else:
-                                continue
-                        if line == "Yearmade":
-                            year_node = TreeNode(treeFile.readline().strip("\n"))
-                            region_node.add_child(year_node)
-                            line = treeFile.readline().strip("\n")
-                            class_node = TreeNode(treeFile.readline().strip("\n"))
-                            year_node.add_child(class_node)
-                            line = treeFile.readline().strip("\n")
-                            objects_id = LeafNode(treeFile.readline().strip("\n"))
-                            class_node.add_child(objects_id)
-                            line = treeFile.readline().strip("\n")
-                            if line == "":
-                                break
-                            else:
-                                continue
-                        if line == "Class_id":
-                            class_node = TreeNode(treeFile.readline().strip("\n"))
-                            year_node.add_child(class_node)
-                            line = treeFile.readline().strip("\n")
-                            objects_id = LeafNode(treeFile.readline().strip("\n"))
-                            class_node.add_child(objects_id)
-                            line = treeFile.readline().strip("\n")
-                            if line == "":
-                                break
-                            else:
-                                continue      
-                    return root_node
+    tree_dict = open_cache(treeFile)
+    root_data = tree_dict.keys()[0]
+    root_node = TreeNode(root_data)
+    for region in tree_dict[root_data].keys():
+        region_node = TreeNode(region)
+        root_node.add_child(region_node)
+        for yearmade in tree_dict[root_data][region].keys():
+            year_node = TreeNode(yearmade)
+            region_node.add_child(year_node)
+            for class_id in tree_dict[root_data][region][yearmade].keys():
+                class_node = TreeNode(class_id)
+                year_node.add_child(class_node)
+                objects_list = tree_dict[root_data][region][yearmade][class_id]
+                objects_node = LeafNode(objects_list)
+                class_node.add_child(objects_node)
+    return root_node
+
     
 def get_class_id(class_name):
     CACHE_DICT_CLASS = open_cache(CACHE_FILENAME_CLASS)
@@ -256,7 +215,7 @@ def search_or_add(tree, region, yearmade, class_id):
 
 root = TreeNode("Art Objects")
 
-file_name = 'treeFile.txt'
+tree_file = 'treeFile.json'
 
 region_test = 'europe'
 yearmade_test = '1800'
@@ -265,14 +224,9 @@ class_name_test = 'drawings'
 if __name__ == '__main__':
     class_id_test = get_class_id(class_name_test)
 
-    # tree_file = open(file_name, 'r')
-    # tree = loadTree(tree_file)
-    # tree_file.close()
-
     tree, objects_list = search_or_add(root, region_test, yearmade_test, class_id_test)
-    tree_file = open(file_name, 'w')
+
     saveTree(tree, tree_file)
-    tree_file.close()
 
     print(f'The art objects in {region_test}, {yearmade_test}, and in the form of {class_name_test} are:')
     for i in range(10):
