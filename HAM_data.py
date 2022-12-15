@@ -63,6 +63,11 @@ def make_request_with_cache(baseurl, params, CACHE_DICT, CACHE_FILENAME):
         save_cache(CACHE_DICT, CACHE_FILENAME)
         return CACHE_DICT[request_key]
 
+
+
+#####################################
+
+
 def main():
     CACHE_DICT_CLASS = open_cache(CACHE_FILENAME_CLASS)
 
@@ -125,15 +130,17 @@ def get_the_10_most_common_words(list):
     for word in words_list:
         word = re.sub(r'[^\w\s]','',word)
         new_list.append(word)
-    new_list = [word.lower() for word in new_list]    
-    common_words = ['a', 'of', 'in', 'the', 'for', 'with', 'and', 'on']
-    new_list = [word.lower() for word in new_list if word not in common_words] 
+    new_list = [word.lower() for word in new_list]
+    new_list = [word for word in new_list if not word.isdigit()]    
+    common_words = ['a', 'an', 'from', 'by', 'of', 'in', 'the', 'for', 'with', 'and', 'on']
+    new_list = [word for word in new_list if word not in common_words] 
     words_counter = Counter(new_list)
     words_most_common = words_counter.most_common(10)
     for item in words_most_common:
         words_10_Most_Common.append(item[0])
-    print(words_most_common)
-    print("words_10_Most_Common: ", words_10_Most_Common)
+    # print(words_most_common)
+    # print("words_10_Most_Common: ", words_10_Most_Common)
+    return words_10_Most_Common
     
 
 if __name__ == "__main__":

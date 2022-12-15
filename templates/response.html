@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Gallery</title>
+    </head>
+
+    <body>
+        <h1>Here are the first 10 results</h1>
+        <ol>
+        {% for title in titles %}
+            <li>{{title}}</li>
+        {% endfor %}
+        </ol>
+
+        <h2>Here are the 10 most frequent words occured in the titles</h2>
+        <ol>
+            {% for word in words %}
+                <li>{{word}}</li>
+            {% endfor %}
+        </ol>
+    </body>
+</html>

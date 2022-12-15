@@ -61,7 +61,7 @@ def saveTree(tree, treeFile):
 
 def loadTree(treeFile): 
     tree_dict = open_cache(treeFile)
-    root_data = tree_dict.keys()[0]
+    root_data = list(tree_dict.keys())[0]
     root_node = TreeNode(root_data)
     for region in tree_dict[root_data].keys():
         region_node = TreeNode(region)
@@ -96,8 +96,7 @@ def get_class_id(class_name):
     # print(classId)
     return class_id
 
-
-def get_objects(region, yearmade, class_id):
+def get_objects(culture, yearmade, class_id):
     CACHE_DICT_OBJECT = open_cache(CACHE_FILENAME_OBJECT)
 
     pages = []
@@ -114,7 +113,7 @@ def get_objects(region, yearmade, class_id):
 
     for page in pages:
         params = {
-            "apikey": HAMAPI_KEY, "region": region, "yearmade": yearmade, "classification": class_id, "page": page
+            "apikey": HAMAPI_KEY, "culture": culture, "yearmade": yearmade, "classification": class_id, "page": page
         }
 
         results = make_request_with_cache(base_url, params, CACHE_DICT_OBJECT, CACHE_FILENAME_OBJECT)
@@ -125,51 +124,51 @@ def get_objects(region, yearmade, class_id):
     return objects_list
 
 
-def search_or_add(tree, region, yearmade, class_id):
+def search_or_add(tree, culture, yearmade, class_id):
     if tree.children == []:
-        r = TreeNode(region)
-        tree.add_child(r)
+        cu = TreeNode(culture)
+        tree.add_child(cu)
 
         y = TreeNode(yearmade)
-        r.add_child(y)
+        cu.add_child(y)
 
         c = TreeNode(class_id)
         y.add_child(c)
 
-        objects_list = get_objects(region, yearmade, class_id)
+        objects_list = get_objects(culture, yearmade, class_id)
         ol = LeafNode(objects_list)
         c.add_child(ol)
 
         return tree, objects_list
 
     else:
-        region_flag = False
-        for region_node in tree.children:
-            if region != region_node.data:
+        culture_flag = False
+        for culture_node in tree.children:
+            if culture != culture_node.data:
                 pass
-            if region == region_node.data:
-                region_flag = True
-                r = region_node
+            if culture == culture_node.data:
+                culture_flag = True
+                cu = culture_node
                 break
-        if region_flag == False:
-            r = TreeNode(region)
-            tree.add_child(r)
+        if culture_flag == False:
+            cu = TreeNode(culture)
+            tree.add_child(cu)
 
             y = TreeNode(yearmade)
-            r.add_child(y)
+            cu.add_child(y)
 
             c = TreeNode(class_id)
             y.add_child(c)
 
-            objects_list = get_objects(region, yearmade, class_id)
+            objects_list = get_objects(culture, yearmade, class_id)
             ol = LeafNode(objects_list)
             c.add_child(ol)
 
             return tree, objects_list
 
-        if region_flag == True:
+        if culture_flag == True:
             year_flag = False
-            for year_node in r.children:
+            for year_node in cu.children:
                 if yearmade != year_node.data:
                     pass
                 if yearmade == year_node.data:
@@ -178,12 +177,12 @@ def search_or_add(tree, region, yearmade, class_id):
                     break
             if year_flag == False:
                 y = TreeNode(yearmade)
-                r.add_child(y)
+                cu.add_child(y)
 
                 c = TreeNode(class_id)
                 y.add_child(c)
 
-                objects_list = get_objects(region, yearmade, class_id)
+                objects_list = get_objects(culture, yearmade, class_id)
                 ol = LeafNode(objects_list)
                 c.add_child(ol)
 
@@ -202,7 +201,7 @@ def search_or_add(tree, region, yearmade, class_id):
                     c = TreeNode(class_id)
                     y.add_child(c)
 
-                    objects_list = get_objects(region, yearmade, class_id)
+                    objects_list = get_objects(culture, yearmade, class_id)
                     ol = LeafNode(objects_list)
                     c.add_child(ol)
 
@@ -213,24 +212,7 @@ def search_or_add(tree, region, yearmade, class_id):
                     return tree, ol.data
 
 
-root = TreeNode("Art Objects")
 
-tree_file = 'treeFile.json'
-
-region_test = 'europe'
-yearmade_test = '1800'
-class_name_test = 'drawings'
-
-if __name__ == '__main__':
-    class_id_test = get_class_id(class_name_test)
-
-    tree, objects_list = search_or_add(root, region_test, yearmade_test, class_id_test)
-
-    saveTree(tree, tree_file)
-
-    print(f'The art objects in {region_test}, {yearmade_test}, and in the form of {class_name_test} are:')
-    for i in range(10):
-        print(objects_list[i]['title'], '\n')
 
     
 

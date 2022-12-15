@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Gallery</title>
+    </head>
+
+    <body>
+        <h1>Build your own gallery</h1><br/>
+        <form action="/handle_form" method="POST">
+            <p>
+                Which culture are you interested in?<br/>
+                <select name="cultures">
+                    <option value="any">Any</option>
+                    <option value="American">American</option>
+                    <option value="British">British</option>
+                    <option value="Byzantine">Byzantine</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Dutch">Dutch</option>
+                    <option value="French">French</option>
+                    <option value="German">German</option>
+                    <option value="Greek">Greek</option>
+                    <option value="Indian">Indian</option>
+                    <option value="Japanese">Japanese</option>
+                </select>
+            </p>
+            <br/>
+            <p>
+                Which year are you interested in?<br/>
+                <input type="number" name="yearmade" min="1000" max="2010" value="1800"><br/>
+            </p>
+            <br/>
+            <p>
+                Which classification are you interested in?<br/>
+                <select name="classes">
+                    <option value="any">Any</option>
+                    <option value="Archival Material">Archival Material</option>
+                    <option value="Coins">Coins</option>
+                    <option value="Drawings">Drawings</option>
+                    <option value="Paintings">Paintings</option>
+                    <option value="Photographs">Photographs</option>
+                    <option value="Prints">Prints</option>
+                    <option value="Sculpture">Sculpture</option>
+                    <option value="Seals">Seals</option>
+                    <option value="Vessels">Vessels</option>
+                </select>
+            </p>
+            <br/>
+            <input type="submit" value="Submit Form"/>
+        </form>
+    </body>
+</html>
