@@ -10,15 +10,29 @@
         <h1>Here are the first 10 results</h1>
         <ol>
         {% for object in objects_p %}
-            <li><a href="{{ object.url }}">{{object.title}}</a></li>
+            <li><a href="{{ object.url }}" target="_blank">{{object.title}}</a></li>
         {% endfor %}
         </ol>
 
-        <h2>Here are the 10 most frequent words occured in the titles</h2>
+        <h2>The 10 most frequent words in titles</h2>
         <ol>
             {% for word in words %}
                 <li>{{word}}</li>
             {% endfor %}
         </ol>
+
+        <form action="/generate_media" method="POST">
+            <h2>Generate your own media gallery</h2>
+            <label for="word_options">Choose a word</label>
+            <select name="word_options">
+                {% for word in words %}
+                <option value={{word}}>{{word}}</option>
+                {% endfor %}
+            </select>
+            <br/>
+            <input type="submit" value="Generate"/>
+        </form>
+        
+
     </body>
 </html>

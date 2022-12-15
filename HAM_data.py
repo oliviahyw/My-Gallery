@@ -132,7 +132,7 @@ def get_the_10_most_common_words(list):
         new_list.append(word)
     new_list = [word.lower() for word in new_list]
     new_list = [word for word in new_list if not word.isdigit()]    
-    common_words = ['a', 'an', 'from', 'by', 'of', 'in', 'the', 'for', 'with', 'and', 'on']
+    common_words = ['a', 'an', 'from', 'to', 'by', 'of', 'in', 'the', 'for', 'with', 'and', 'on']
     new_list = [word for word in new_list if word not in common_words] 
     words_counter = Counter(new_list)
     words_most_common = words_counter.most_common(10)

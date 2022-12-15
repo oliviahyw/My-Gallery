@@ -32,10 +32,10 @@ class TreeNode:
             for child in self.children:
                 child.print_tree()
 
-
     def add_child(self, child):
         child.parent = self
         self.children.append(child)
+
 
 class LeafNode(TreeNode):
     def __init__(self, data):
@@ -43,19 +43,20 @@ class LeafNode(TreeNode):
         self.children = None
         self.parent = None
 
+
 def saveTree(tree, treeFile):
     root = tree.data
     tree_dict = {}
     tree_dict[root] = {}
     
-    for region_node in tree.children:
-        tree_dict[root][region_node.data] = {}
-        for year_node in region_node.children:
-            tree_dict[root][region_node.data][year_node.data] = {}
+    for culture_node in tree.children:
+        tree_dict[root][culture_node.data] = {}
+        for year_node in culture_node.children:
+            tree_dict[root][culture_node.data][year_node.data] = {}
             for class_node in year_node.children:
                 class_id = class_node.data
                 objects_list = class_node.children[0]
-                tree_dict[root][region_node.data][year_node.data][class_id] = objects_list.data
+                tree_dict[root][culture_node.data][year_node.data][class_id] = objects_list.data
     save_cache(tree_dict, treeFile)
 
 
@@ -63,16 +64,16 @@ def loadTree(treeFile):
     tree_dict = open_cache(treeFile)
     root_data = list(tree_dict.keys())[0]
     root_node = TreeNode(root_data)
-    for region in tree_dict[root_data].keys():
-        region_node = TreeNode(region)
-        root_node.add_child(region_node)
-        for yearmade in tree_dict[root_data][region].keys():
+    for culture in tree_dict[root_data].keys():
+        culture_node = TreeNode(culture)
+        root_node.add_child(culture_node)
+        for yearmade in tree_dict[root_data][culture].keys():
             year_node = TreeNode(yearmade)
-            region_node.add_child(year_node)
-            for class_id in tree_dict[root_data][region][yearmade].keys():
+            culture_node.add_child(year_node)
+            for class_id in tree_dict[root_data][culture][yearmade].keys():
                 class_node = TreeNode(class_id)
                 year_node.add_child(class_node)
-                objects_list = tree_dict[root_data][region][yearmade][class_id]
+                objects_list = tree_dict[root_data][culture][yearmade][class_id]
                 objects_node = LeafNode(objects_list)
                 class_node.add_child(objects_node)
     return root_node
@@ -214,6 +215,8 @@ def search_or_add(tree, culture, yearmade, class_id):
 
 
 
+
+    
     
 
 

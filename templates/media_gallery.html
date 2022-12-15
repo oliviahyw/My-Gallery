@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Gallery</title>
+    </head>
+
+    <body>
+        <h1>Here is the media gallery for {{ term }}</h1>
+        <h2>SONGS</h2>
+        {% if s_count == 0 %}
+            <p>No Results in Songs</p>
+        {% else %}
+            <ol>
+                {% for song in s_list %}
+                <li><a href="{{ song.url }}" target="_blank">{{song.info()}}</a></li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+        <br/>
+
+        <h2>MOVIES</h2>
+        {% if m_count == 0 %}
+            <p>No Results in Movies</p>
+        {% else %}
+            <ol>
+                {% for movie in m_list %}
+                <li><a href="{{ movie.url }}" target="_blank">{{movie.info()}}</a></li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+        <br/>
+
+        <h2>OTHER MEDIA</h2>
+        {% if me_count == 0 %}
+            <p>No Results in other Media</p>
+        {% else %}
+            <ol>
+                {% for media in me_list %}
+                <li><a href="{{ media.url }}" target="_blank">{{media.info()}}</a></li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+        <br/>
+    </body>
+</html>

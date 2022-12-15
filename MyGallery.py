@@ -1,5 +1,6 @@
 from finalcache import *
 from HAM_data import *
+from itunes_data import *
 from tree import *
 
 from flask import Flask, render_template, request
@@ -81,7 +82,7 @@ def get_HAM_params():
     saveTree(tree, tree_file)
 
     ten_words = get_the_10_most_common_words(objects_titles)
-
+    
     return render_template('response.html',
         culture_p = culture,
         yearmade_p = yearmade,
@@ -89,6 +90,68 @@ def get_HAM_params():
         titles = objects_titles,
         objects_p = objects,
         words = ten_words)
+
+
+@app.route('/generate_media', methods=['POST'])
+def generate_media():
+    keyword = request.form['word_options']
+
+    CACHE_FILENAME_ITUNES = 'cache_itunes.json'
+    CACHE_DICT_ITUNES = open_cache(CACHE_FILENAME_ITUNES)
+
+    base_url_itunes = 'https://itunes.apple.com/search'
+
+    params_itunes = {
+        "term": keyword, "limit": 50
+    }
+
+    results_itunes = make_request_with_cache(base_url_itunes, params_itunes, CACHE_DICT_ITUNES, CACHE_FILENAME_ITUNES)
+    itunes = results_itunes['results']
+
+    media_list = []
+    song_list = []
+    movie_list = []
+
+    for item in itunes:
+        if item["wrapperType"] == "track":
+            if item["kind"] == "song":
+                try:
+                    song_list.append(Song(json=item))
+                except: 
+                    pass
+            elif item["kind"][-5:] == "movie":
+                try:
+                    movie_list.append(Movie(json=item))
+                except:
+                    pass
+            else:
+                try:
+                    media_list.append(Media(json=item))
+                except:
+                    pass
+        else:
+            try:
+                media_list.append(Media(json=item))
+            except:
+                pass
+
+    media_count = len(media_list)
+    song_count = len(song_list)
+    movie_count = len(movie_list) 
+
+    whole_list = song_list+movie_list+media_list
+
+    if len(whole_list) == 0:
+        return render_template('no_media_result.html')
+
+    return render_template('media_gallery.html',
+        term = keyword,
+        s_count = song_count,
+        m_count = movie_count,
+        me_count = media_count,
+        s_list = song_list,
+        m_list = movie_list,
+        me_list = media_list)
 
 
 
