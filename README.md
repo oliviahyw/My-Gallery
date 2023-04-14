@@ -1,7 +1,7 @@
 # My Gallery
 
 ## Project Overview
-In this project, I want to link the artworks from Harvard Art Museum with iTunes, and generate a personal gallery based ob users' interest.
+In this project, I linked the artworks from Harvard Art Museum with iTunes, and generated a personal gallery based on users' interest.
 
 The main program is in the ‘MyGallery.py’ file. To run my program, you can just run this python file, it will automatically run the server on “[http://127.0.0.1:5000](http://127.0.0.1:5000/)”. The api key is also in this file. When you run the file and open the flask app, you need to specify the value of three filters/parameters (culture, yearmade, classification) and then submit the form. It will visualize the search results on the response page. If there is no result for your search, you can start over and try other parameters. You can jump to the detail page of each art object on the response page. And based on the 100 records of your search results, the response page will visualize the 10 most frequent words in the artworks’ titles. You can then choose a word and generate a media gallery based on that keyword.
 
