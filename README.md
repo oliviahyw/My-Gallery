@@ -1,4 +1,4 @@
-# 507_final: My Gallery
+# My Gallery
 
 ## Project Overview
 In this project, I want to link the artworks from Harvard Art Museum with iTunes, and generate a personal gallery based ob users' interest.
